@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMS Spam Filter</title>
+    <!-- Bootstrap 5 CSS (Dark theme) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <i class="fas fa-shield-alt me-2"></i>
+                    SMS Spam Filter
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#history" id="history-link">History</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#helpModal">Help</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-primary bg-gradient">
+                        <h2 class="card-title text-white mb-0">
+                            <i class="fas fa-envelope me-2"></i>SMS Spam Detector
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="spam-check-form">
+                            <div class="mb-3">
+                                <label for="message-input" class="form-label">Enter SMS Message</label>
+                                <textarea class="form-control" id="message-input" rows="4" placeholder="Type or paste an SMS message here..." required aria-describedby="messageHelp"></textarea>
+                                <div id="messageHelp" class="form-text">
+                                    Enter any SMS message to check if it's spam or legitimate.
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary" id="check-button">
+                                    <i class="fas fa-search me-2"></i>Check Message
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Results Card (initially hidden) -->
+                <div class="card shadow mb-4 d-none" id="results-card">
+                    <div class="card-header" id="results-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="card-title mb-0" id="result-title">Analysis Result</h3>
+                            <span class="badge fs-6" id="result-badge">Processing...</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <h5>Message:</h5>
+                            <p class="message-text p-2 rounded" id="result-message"></p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h5>Confidence Score:</h5>
+                            <div class="progress" role="progressbar" aria-label="Confidence score">
+                                <div class="progress-bar" id="confidence-bar" style="width: 0%">0%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h5>Key Indicators:</h5>
+                            <ul id="indicators-list" class="list-group">
+                                <!-- Indicators will be added here via JavaScript -->
+                            </ul>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <div>
+                                <button type="button" class="btn btn-outline-primary" id="copy-result-btn">
+                                    <i class="fas fa-copy me-1"></i> Copy Result
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary ms-2" id="share-result-btn">
+                                    <i class="fas fa-share-alt me-1"></i> Share
+                                </button>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-warning d-none" id="report-ham-btn">
+                                    <i class="fas fa-check-circle me-1"></i> Report as Legitimate
+                                </button>
+                                <button type="button" class="btn btn-danger d-none" id="report-spam-btn">
+                                    <i class="fas fa-exclamation-triangle me-1"></i> Report as Spam
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Section -->
+                <div class="card shadow mb-4" id="history-section">
+                    <div class="card-header bg-secondary bg-gradient">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="card-title text-white mb-0">Message History</h3>
+                            <button class="btn btn-sm btn-outline-light" id="clear-history-btn">
+                                <i class="fas fa-trash me-1"></i> Clear History
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info d-none" id="no-history-alert">
+                            <i class="fas fa-info-circle me-2"></i> No message history yet. Check some messages to see them here.
+                        </div>
+                        <ul class="list-group" id="history-list">
+                            <!-- History items will be added here via JavaScript -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <!-- Information Card -->
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-info bg-gradient">
+                        <h4 class="card-title text-white mb-0">
+                            <i class="fas fa-info-circle me-2"></i>About SMS Spam
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <h5>Common SMS Spam Characteristics:</h5>
+                        <ul>
+                            <li>Offers of free prizes or money</li>
+                            <li>Urgent calls to action</li>
+                            <li>Requests for personal information</li>
+                            <li>Unknown shortened links</li>
+                            <li>Misspellings and poor grammar</li>
+                            <li>Messages from unknown senders</li>
+                        </ul>
+                        
+                        <h5>Tips to Stay Safe:</h5>
+                        <ul>
+                            <li>Never click on suspicious links</li>
+                            <li>Don't reply to messages asking for personal information</li>
+                            <li>Block and report spam numbers</li>
+                            <li>Be cautious of messages creating urgency</li>
+                            <li>Use this tool to verify suspicious messages</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Stats Card -->
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-success bg-gradient">
+                        <h4 class="card-title text-white mb-0">
+                            <i class="fas fa-chart-bar me-2"></i>Your Stats
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6 mb-3">
+                                <div class="card bg-light">
+                                    <div class="card-body py-3">
+                                        <h3 class="text-primary mb-0" id="checked-count">0</h3>
+                                        <p class="mb-0">Messages Checked</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="card bg-light">
+                                    <div class="card-body py-3">
+                                        <h3 class="text-danger mb-0" id="spam-count">0</h3>
+                                        <p class="mb-0">Spam Detected</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-2">
+                            <h5>Spam Ratio</h5>
+                            <div class="progress" role="progressbar" aria-label="Spam ratio">
+                                <div class="progress-bar bg-danger" id="spam-ratio-bar" style="width: 0%">0%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Share Modal -->
+        <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="shareModalLabel">Share This Result</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Copy this text to share your spam detection result:</p>
+                        <div class="form-floating mb-3">
+                            <textarea class="form-control" id="share-text" style="height: 150px" readonly></textarea>
+                            <label for="share-text">Share Text</label>
+                        </div>
+                        <div class="d-grid">
+                            <button type="button" class="btn btn-primary" id="copy-share-text-btn">
+                                <i class="fas fa-copy me-2"></i>Copy to Clipboard
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Modal -->
+        <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="helpModalLabel">SMS Spam Filter Help</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h6>How to use this tool:</h6>
+                        <ol>
+                            <li>Paste or type an SMS message in the text area</li>
+                            <li>Click the "Check Message" button</li>
+                            <li>View the analysis result showing whether the message is spam or legitimate</li>
+                            <li>Review previous messages in the History section</li>
+                        </ol>
+                        
+                        <h6>Common spam indicators:</h6>
+                        <ul>
+                            <li>Offers of free items or prizes</li>
+                            <li>Urgent requests for action</li>
+                            <li>Requests for personal information</li>
+                            <li>Suspicious links</li>
+                            <li>Poor grammar or excessive punctuation</li>
+                        </ul>
+                        
+                        <h6>Reporting incorrect results:</h6>
+                        <p>If a message is incorrectly classified, use the "Report as Legitimate" or "Report as Spam" button to provide feedback.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+            <div id="toast" class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body" id="toast-message">
+                        Message copied to clipboard.
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-dark">
+        <div class="container text-center">
+            <span class="text-muted">© 2025 SMS Spam Filter | Privacy-focused spam detection</span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+</body>
+</html>

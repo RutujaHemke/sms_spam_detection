@@ -1,0 +1,117 @@
+/* Custom styles for SMS Spam Filter */
+
+/* Dark mode adjustments */
+body {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+/* Message styling */
+.message-text {
+    border-left: 4px solid var(--bs-primary);
+    background-color: rgba(255, 255, 255, 0.1);
+    word-break: break-word;
+}
+
+/* Result card styling for spam/ham */
+.spam-result {
+    border-color: var(--bs-danger);
+}
+
+.ham-result {
+    border-color: var(--bs-success);
+}
+
+.spam-header {
+    background-color: var(--bs-danger);
+    color: white;
+}
+
+.ham-header {
+    background-color: var(--bs-success);
+    color: white;
+}
+
+/* Badge styling */
+.spam-badge {
+    background-color: var(--bs-danger);
+    color: white;
+}
+
+.ham-badge {
+    background-color: var(--bs-success);
+    color: white;
+}
+
+/* History item styling */
+.history-item {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.history-item:hover {
+    transform: translateX(5px);
+}
+
+.history-message {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+/* Accessibility improvements */
+.btn:focus, .form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.5);
+    outline: 2px solid var(--bs-primary);
+}
+
+/* Make form elements more visible in dark mode */
+.form-control {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.form-control:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+/* Indicators styling */
+.indicator-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .history-message {
+        max-width: 200px;
+    }
+}
+
+@media (max-width: 576px) {
+    .history-message {
+        max-width: 150px;
+    }
+    
+    #history-section .card-header {
+        flex-direction: column;
+        align-items: start !important;
+    }
+    
+    #clear-history-btn {
+        margin-top: 0.5rem;
+    }
+}
